@@ -40,24 +40,29 @@ const studentMarks = [
   { id: 8, studentId: 4, mark: 18, max: 20, min: 12 },
 ];
 function findAvg(studentId) {
-  const studentArray = studentMarks.filter(
+  const targetStudentMarks = studentMarks.filter(
     (item) => item.studentId === studentId
   );
   let sumMarks = 0;
-  studentArray.forEach((student) => (sumMarks += student.mark));
-  const studentAvg = sumMarks / studentArray.length;
+  if (targetStudentMarks.length === 0) {
+    //assuming that there is nor marks for target student
+    return 0;
+  }
+  targetStudentMarks.forEach((student) => (sumMarks += student.mark));
+  const studentAvg = sumMarks / targetStudentMarks.length;
   return studentAvg;
 }
 // i make new function to get all marks in class for a given class ID because i used it in two functions , to avoid duplication
-function getAvgs(classId) {
+function getMarksAvgInClass(classId) {
   let avgsInClass = [];
-  const targetClass = classes.filter((cl) => cl.id === classId);
-  const studentsInClass = targetClass[0].students;
+  const targetClass = classes.find((cl) => cl.id === classId);
+  const studentsInClass = targetClass.students;
   studentsInClass.forEach((student) => avgsInClass.push(findAvg(student)));
   return avgsInClass;
 }
+getMarksAvgInClass(1);
 function findTopStudent(classId) {
-  const avgsInClass = getAvgs(classId);
+  const avgsInClass = getMarksAvgInClass(classId);
   const sortedAvgsInClass = avgsInClass.sort((a, b) => b - a);
   const topAvgInClass = sortedAvgsInClass[0];
   const topStudent = students.filter(
@@ -70,7 +75,7 @@ findTopStudent(1);
 
 function findAvgMarkInClass(classId) {
   let sumClassMarks = 0;
-  const avgsInClass = getAvgs(classId);
+  const avgsInClass = getMarksAvgInClass(classId);
   avgsInClass.forEach((mark) => (sumClassMarks += mark));
   const avgMarkInClass = sumClassMarks / avgsInClass.length;
   console.log(avgMarkInClass);
